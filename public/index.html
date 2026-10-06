@@ -1,1 +1,301 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Cloudflare MMO v1</title><style>*{box-sizing:border-box}body{margin:0;background:#111827;color:#fff;font-family:system-ui,sans-serif}.wrap{max-width:900px;margin:auto;padding:18px}.card{background:#1f2937;border:1px solid #374151;border-radius:16px;padding:18px;margin:12px 0}input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #4b5563;margin:5px 0;font-size:16px}button{background:#2563eb;color:#fff;border:0;font-weight:700}button.secondary{background:#374151}.hidden{display:none!important}#game{position:relative;height:58vh;min-height:360px;overflow:hidden;border-radius:16px;background:#7fb069;border:2px solid #374151}#world{position:absolute;left:0;top:0;width:2000px;height:1200px;background:linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:40px 40px}.player{position:absolute;width:42px;height:42px;border-radius:10px;background:#2563eb;border:3px solid #fff;transform:translate(-50%,-50%);text-align:center;font-size:9px;padding-top:45px;white-space:nowrap}.me{background:#dc2626}.row{display:flex;gap:8px}.row>*{flex:1}#hud{display:flex;gap:8px;flex-wrap:wrap;align-items:center}#hud span{background:#111827;padding:8px 10px;border-radius:9px}#logout{width:auto;margin-left:auto}.status{font-size:13px;color:#cbd5e1}</style></head><body><div class="wrap"><h1>Cloudflare MMO v1</h1><section id="auth" class="card"><h2 id="authTitle">Login</h2><input id="username" placeholder="Username"><input id="password" type="password" placeholder="Password"><input id="characterName" placeholder="Nama karakter" class="hidden"><button id="authBtn">Login</button><button id="switchBtn" class="secondary">Buat akun baru</button><p id="authMsg"></p></section><section id="gameCard" class="hidden"><div class="card"><div id="hud"><span>👤 <b id="charName"></b></span><span>Level <b id="level">1</b></span><span>Gold <b id="gold">100</b></span><span id="status">Menghubungkan...</span><button id="logout" class="secondary">Logout</button></div></div><div id="game"><div id="world"></div></div><div class="card"><b>Kontrol</b><div>PC: WASD / panah. HP: tombol di bawah.</div><div class="row"><button data-key="up">↑</button></div><div class="row"><button data-key="left">←</button><button data-key="down">↓</button><button data-key="right">→</button></div></div></section></div><script>let reg=false,ws=null,me=null,x=450,y=350;const speed=12,players=new Map(),world=document.getElementById('world');const msg=t=>document.getElementById('authMsg').textContent=t;async function api(p,o={}){const r=await fetch(p,{credentials:'include',...o}),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Request gagal');return d}function show(u){me=u;auth.classList.add('hidden');gameCard.classList.remove('hidden');charName.textContent=u.character.name;level.textContent=u.character.level;gold.textContent=u.character.gold;connect()}function setp(id,a,b,n,m){let e=players.get(id);if(!e){e=document.createElement('div');e.className='player';world.appendChild(e);players.set(id,e)}e.classList.toggle('me',m);e.textContent=n||'Player';e.style.left=a+'px';e.style.top=b+'px'}function del(id){const e=players.get(id);if(e){e.remove();players.delete(id)}}function connect(){ws=new WebSocket((location.protocol==='https:'?'wss':'ws')+'://'+location.host+'/ws');ws.onopen=()=>status.textContent='Online';ws.onclose=()=>status.textContent='Terputus';ws.onerror=()=>status.textContent='Error';ws.onmessage=e=>{const d=JSON.parse(e.data);if(d.type==='welcome'){d.players.forEach(p=>setp(p.id,p.x,p.y,p.name,p.id===d.playerId));me.netId=d.playerId}if(d.type==='join')setp(d.id,d.x,d.y,d.name,false);if(d.type==='move'){const old=players.get(d.id);setp(d.id,d.x,d.y,old?.textContent,d.id===me.netId)}if(d.type==='leave')del(d.id)}}function move(dx,dy){x=Math.max(0,Math.min(2000,x+dx));y=Math.max(0,Math.min(1200,y+dy));const e=players.get(me?.netId);if(e){e.style.left=x+'px';e.style.top=y+'px'}if(ws?.readyState===1)ws.send(JSON.stringify({type:'move',x,y}))}addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault();if(k==='w'||k==='arrowup')move(0,-speed);if(k==='s'||k==='arrowdown')move(0,speed);if(k==='a'||k==='arrowleft')move(-speed,0);if(k==='d'||k==='arrowright')move(speed,0)});document.querySelectorAll('[data-key]').forEach(b=>b.onpointerdown=()=>{const k=b.dataset.key;if(k==='up')move(0,-speed);if(k==='down')move(0,speed);if(k==='left')move(-speed,0);if(k==='right')move(speed,0)});authBtn.onclick=async()=>{try{const body={username:username.value,password:password.value};if(reg)body.characterName=characterName.value;show((await api(reg?'/api/register':'/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})).user)}catch(e){msg(e.message)}};switchBtn.onclick=()=>{reg=!reg;authTitle.textContent=reg?'Buat akun':'Login';authBtn.textContent=reg?'Daftar':'Login';switchBtn.textContent=reg?'Sudah punya akun':'Buat akun baru';characterName.classList.toggle('hidden',!reg);msg('')};logout.onclick=async()=>{await api('/api/logout',{method:'POST'});location.reload()};(async()=>{try{const d=await api('/api/me');if(d.authenticated)show(d.user)}catch{}})();</script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b1220">
+<title>Cloudflare MMO</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1220;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
+button,input{font:inherit}
+.hidden{display:none!important}
+#auth{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:#0b1220;z-index:50;overflow:auto}
+.authCard{width:min(430px,100%);background:#1b2638;border:1px solid #34445d;border-radius:20px;padding:22px;box-shadow:0 16px 50px #0008}
+.authCard h1{margin:0 0 8px;font-size:28px}.authCard p{color:#b8c4d8}
+.authCard input,.authCard button{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid #465873}
+.authCard input{background:#0f1726;color:#fff;outline:none}
+.authCard button{border:0;background:#2864dc;color:#fff;font-weight:700}
+.authCard button.secondary{background:#334158}
+#game{position:fixed;inset:0;overflow:hidden;background:#6fa85f}
+#canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:fixed;left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));z-index:10;pointer-events:none}
+.hudBox{background:#0b1220d9;border:1px solid #ffffff22;border-radius:12px;padding:9px 12px;backdrop-filter:blur(8px);font-size:13px;line-height:1.45;box-shadow:0 8px 24px #0004}
+.hudName{font-weight:800;font-size:15px}.online{color:#70e08a}.offline{color:#ff8b8b}
+#logout{pointer-events:auto;margin-top:6px;padding:5px 9px;border:0;border-radius:8px;background:#334158;color:#fff;font-size:11px}
+#joystick{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));width:132px;height:132px;border-radius:50%;background:#0b122099;border:2px solid #ffffff30;z-index:20}
+#joyKnob{position:absolute;width:58px;height:58px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#ffffff30;border:2px solid #fff8;box-shadow:0 4px 16px #0005}
+#rightUI{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:min(310px,43vw);z-index:20;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+#actions{display:flex;gap:6px;justify-content:flex-end}
+.actionBtn{border:1px solid #ffffff30;background:#0b1220dd;color:#fff;border-radius:10px;padding:10px 12px;font-weight:700;min-width:72px;box-shadow:0 6px 18px #0004}
+#chat{background:#0b1220c7;border:1px solid #ffffff25;border-radius:12px;backdrop-filter:blur(8px);overflow:hidden}
+#chatLog{height:125px;overflow:auto;padding:8px;font-size:12px;line-height:1.35}
+.chatLine{margin:3px 0;word-break:break-word}.chatLine b{color:#9dc1ff}
+#chatForm{display:flex;border-top:1px solid #ffffff20}
+#chatInput{min-width:0;flex:1;background:transparent;color:#fff;border:0;padding:10px;outline:none}
+#chatSend{width:58px;border:0;background:#2864dc;color:#fff;font-weight:700}
+#actionPanel{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:240px;width:min(290px,72vw);z-index:30;background:#111b2bfa;border:1px solid #ffffff25;border-radius:14px;padding:14px;box-shadow:0 15px 40px #0008}
+#actionPanel h3{margin:0 0 8px}.panelClose{float:right;border:0;background:#334158;color:#fff;border-radius:7px;padding:4px 8px}
+@media(max-width:600px){
+ #rightUI{width:min(275px,58vw)}
+ #chatLog{height:105px}
+ #joystick{width:122px;height:122px}
+ #joyKnob{width:54px;height:54px}
+}
+</style>
+</head>
+<body>
+<section id="auth">
+  <div class="authCard">
+    <h1>Cloudflare MMO</h1>
+    <p id="authTitle">Masuk ke dunia game</p>
+    <input id="username" autocomplete="username" placeholder="Username">
+    <input id="password" type="password" autocomplete="current-password" placeholder="Password">
+    <input id="characterName" maxlength="8" placeholder="Nickname (3–8 karakter)" class="hidden">
+    <button id="authBtn">Login</button>
+    <button id="switchBtn" class="secondary">Buat akun baru</button>
+    <p id="authMsg"></p>
+  </div>
+</section>
+
+<section id="game" class="hidden">
+  <canvas id="canvas"></canvas>
+
+  <div id="hud">
+    <div class="hudBox">
+      <div class="hudName" id="hudName">Player</div>
+      <div>Level <b id="hudLevel">1</b> &nbsp; Gold <b id="hudGold">100</b></div>
+      <div id="hudStatus" class="offline">Menghubungkan...</div>
+      <button id="logout">Keluar</button>
+    </div>
+  </div>
+
+  <div id="joystick">
+    <div id="joyKnob"></div>
+  </div>
+
+  <div id="rightUI">
+    <div id="actions">
+      <button class="actionBtn" id="actionBtn">Action</button>
+      <button class="actionBtn" id="questBtn">Quest</button>
+      <button class="actionBtn" id="bagBtn">Tas</button>
+    </div>
+    <div id="chat">
+      <div id="chatLog"></div>
+      <form id="chatForm">
+        <input id="chatInput" maxlength="120" autocomplete="off" placeholder="Tulis pesan...">
+        <button id="chatSend">Kirim</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="actionPanel" class="hidden">
+    <button class="panelClose" id="panelClose">Tutup</button>
+    <h3 id="panelTitle">Action</h3>
+    <div id="panelText">Belum ada objek di dekat karakter.</div>
+  </div>
+</section>
+
+<script>
+let reg=false,ws=null,me=null;
+const players=new Map();
+const canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d");
+const WORLD_W=2000,WORLD_H=1200;
+const mePos={x:1000,y:600};
+const input={x:0,y:0};
+let camera={x:0,y:0,scale:1};
+let lastTime=performance.now(),lastSend=0;
+let joyActive=false,joyPointer=null;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const authMsg=t=>$("authMsg").textContent=t||"";
+
+async function api(p,o={}){
+  const r=await fetch(p,{credentials:"include",...o});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(d.error||"Request gagal");
+  return d;
+}
+function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);ctx.setTransform(d,0,0,d,0,0)}
+addEventListener("resize",resize);resize();
+
+function showGame(u){
+  me=u;
+  $("auth").classList.add("hidden");
+  $("game").classList.remove("hidden");
+  $("hudName").textContent=(u.character.name||"Player").slice(0,8);
+  $("hudLevel").textContent=u.character.level||1;
+  $("hudGold").textContent=u.character.gold||0;
+  connect();
+  requestAnimationFrame(loop);
+}
+
+function addPlayer(p){
+  if(p.id===me?.netId)return;
+  players.set(p.id,{id:p.id,x:p.x,y:p.y,targetX:p.x,targetY:p.y,name:(p.name||"Player").slice(0,8)});
+}
+function removePlayer(id){players.delete(id)}
+
+function connect(){
+  ws=new WebSocket((location.protocol==="https:"?"wss":"ws")+"://"+location.host+"/ws");
+  ws.onopen=()=>{$("hudStatus").textContent="Online";$("hudStatus").className="online";sendPosition(true)};
+  ws.onclose=()=>{$("hudStatus").textContent="Terputus";$("hudStatus").className="offline"};
+  ws.onerror=()=>{$("hudStatus").textContent="Koneksi error";$("hudStatus").className="offline"};
+  ws.onmessage=e=>{
+    let d;try{d=JSON.parse(e.data)}catch{return}
+    if(d.type==="welcome"){
+      me.netId=d.playerId;
+      mePos.x=d.self?.x??d.players.find(p=>p.id===d.playerId)?.x??1000;
+      mePos.y=d.self?.y??d.players.find(p=>p.id===d.playerId)?.y??600;
+      d.players.forEach(addPlayer);
+    }else if(d.type==="join"){addPlayer(d)}
+    else if(d.type==="move"){
+      const p=players.get(d.id);
+      if(p){p.targetX=d.x;p.targetY=d.y;p.name=(d.name||p.name||"Player").slice(0,8)}
+      else if(d.id!==me?.netId)addPlayer({...d});
+    }else if(d.type==="leave"){removePlayer(d.id)}
+    else if(d.type==="chat"){addChat(d.name,d.message)}
+  };
+}
+function sendPosition(force=false){
+  const now=performance.now();
+  if(!force&&now-lastSend<80)return;
+  lastSend=now;
+  if(ws?.readyState===1)ws.send(JSON.stringify({type:"move",x:mePos.x,y:mePos.y}));
+}
+
+function setInput(x,y){
+  const l=Math.hypot(x,y);
+  if(l>1){x/=l;y/=l}
+  input.x=x;input.y=y;
+}
+const keys={};
+addEventListener("keydown",e=>{
+  const k=e.key.toLowerCase();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(k)){e.preventDefault();keys[k]=true}
+});
+addEventListener("keyup",e=>{keys[e.key.toLowerCase()]=false});
+function keyboardInput(){
+  let x=0,y=0;
+  if(keys.a||keys.arrowleft)x--;
+  if(keys.d||keys.arrowright)x++;
+  if(keys.w||keys.arrowup)y--;
+  if(keys.s||keys.arrowdown)y++;
+  if(x||y)setInput(x,y);
+  else if(!joyActive)setInput(0,0);
+}
+
+function joyMove(ev){
+  const r=$("joystick").getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  let dx=ev.clientX-cx,dy=ev.clientY-cy;
+  const max=r.width*.34,l=Math.hypot(dx,dy);
+  if(l>max){dx=dx/l*max;dy=dy/l*max}
+  $("joyKnob").style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
+  setInput(dx/max,dy/max);
+}
+$("joystick").addEventListener("pointerdown",e=>{joyActive=true;joyPointer=e.pointerId;$("joystick").setPointerCapture(e.pointerId);joyMove(e)});
+$("joystick").addEventListener("pointermove",e=>{if(joyActive&&e.pointerId===joyPointer)joyMove(e)});
+$("joystick").addEventListener("pointerup",e=>{if(e.pointerId===joyPointer){joyActive=false;joyPointer=null;$("joyKnob").style.transform="translate(-50%,-50%)";setInput(0,0)}});
+$("joystick").addEventListener("pointercancel",()=>{joyActive=false;joyPointer=null;$("joyKnob").style.transform="translate(-50%,-50%)";setInput(0,0)});
+
+function loop(now){
+  const dt=Math.min(.05,(now-lastTime)/1000);lastTime=now;
+  keyboardInput();
+  if(input.x||input.y){
+    const speed=190;
+    mePos.x=Math.max(35,Math.min(WORLD_W-35,mePos.x+input.x*speed*dt));
+    mePos.y=Math.max(45,Math.min(WORLD_H-35,mePos.y+input.y*speed*dt));
+    sendPosition();
+  }
+  const viewW=innerWidth,viewH=innerHeight;
+  camera.scale=Math.max(viewW/WORLD_W,viewH/WORLD_H);
+  const worldViewW=viewW/camera.scale,worldViewH=viewH/camera.scale;
+  camera.x=Math.max(0,Math.min(WORLD_W-worldViewW,mePos.x-worldViewW/2));
+  camera.y=Math.max(0,Math.min(WORLD_H-worldViewH,mePos.y-worldViewH/2));
+  draw();
+  requestAnimationFrame(loop);
+}
+function sx(x){return (x-camera.x)*camera.scale}
+function sy(y){return (y-camera.y)*camera.scale}
+
+function drawWorld(){
+  ctx.fillStyle="#6fa85f";ctx.fillRect(0,0,innerWidth,innerHeight);
+  const step=64*camera.scale;
+  ctx.strokeStyle="#ffffff12";ctx.lineWidth=1;
+  const ox=(-camera.x*camera.scale)%step,oy=(-camera.y*camera.scale)%step;
+  for(let x=ox;x<innerWidth;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,innerHeight);ctx.stroke()}
+  for(let y=oy;y<innerHeight;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(innerWidth,y);ctx.stroke()}
+  // Simple landmarks so the canvas feels like a map.
+  const landmarks=[["Sekolah",1000,240],["Taman",350,800],["Lapangan",1600,850]];
+  ctx.textAlign="center";ctx.font=`700 ${Math.max(12,18*camera.scale)}px system-ui`;
+  for(const [name,x,y] of landmarks){
+    ctx.fillStyle="#254b2a88";ctx.fillRect(sx(x)-90*camera.scale,sy(y)-45*camera.scale,180*camera.scale,90*camera.scale);
+    ctx.fillStyle="#fff";ctx.fillText(name,sx(x),sy(y)+6*camera.scale);
+  }
+}
+function drawCharacter(x,y,name,isMe){
+  const X=sx(x),Y=sy(y),s=Math.max(.7,camera.scale);
+  // shadow
+  ctx.fillStyle="#0005";ctx.beginPath();ctx.ellipse(X,Y+7*s,18*s,7*s,0,0,Math.PI*2);ctx.fill();
+  // body/head
+  ctx.fillStyle=isMe?"#e34a4a":"#3b82f6";ctx.beginPath();ctx.roundRect(X-12*s,Y-28*s,24*s,28*s,7*s);ctx.fill();
+  ctx.fillStyle="#f3c7a5";ctx.beginPath();ctx.arc(X,Y-34*s,10*s,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#1f2937";ctx.beginPath();ctx.arc(X,Y-38*s,10*s,Math.PI,Math.PI*2);ctx.fill();
+  ctx.textAlign="center";ctx.font=`700 ${Math.max(10,12*s)}px system-ui`;
+  const n=name.slice(0,8);
+  const w=ctx.measureText(n).width+12;
+  ctx.fillStyle="#07101ddd";ctx.fillRect(X-w/2,Y-58*s,w,17*s);
+  ctx.fillStyle="#fff";ctx.fillText(n,X,Y-46*s);
+}
+function draw(){
+  drawWorld();
+  for(const p of players.values()){
+    p.x+=(p.targetX-p.x)*.22;p.y+=(p.targetY-p.y)*.22;
+    drawCharacter(p.x,p.y,p.name,false);
+  }
+  drawCharacter(mePos.x,mePos.y,(me?.character?.name||"Player").slice(0,8),true);
+}
+
+function addChat(name,text){
+  const d=document.createElement("div");d.className="chatLine";
+  d.innerHTML=`<b>${esc(String(name||"Player").slice(0,8))}</b>: ${esc(text)}`;
+  $("chatLog").appendChild(d);
+  $("chatLog").scrollTop=$("chatLog").scrollHeight;
+}
+$("chatForm").onsubmit=e=>{
+  e.preventDefault();
+  const text=$("chatInput").value.trim();
+  if(!text||ws?.readyState!==1)return;
+  ws.send(JSON.stringify({type:"chat",message:text}));
+  $("chatInput").value="";
+};
+
+function panel(title,text){$("panelTitle").textContent=title;$("panelText").textContent=text;$("actionPanel").classList.remove("hidden")}
+$("panelClose").onclick=()=>$("actionPanel").classList.add("hidden");
+$("actionBtn").onclick=()=>panel("Action","Belum ada objek interaktif di dekat karakter.");
+$("questBtn").onclick=()=>panel("Quest","Sistem quest siap ditambahkan ke map. Tombol ini sudah disiapkan untuk interaksi berikutnya.");
+$("bagBtn").onclick=()=>panel("Tas","Inventory karakter akan tampil di sini.");
+
+$("authBtn").onclick=async()=>{
+  try{
+    const body={username:$("username").value,password:$("password").value};
+    if(reg)body.characterName=$("characterName").value;
+    const d=await api(reg?"/api/register":"/api/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
+    showGame(d.user);
+  }catch(e){authMsg(e.message)}
+};
+$("switchBtn").onclick=()=>{
+  reg=!reg;
+  $("authTitle").textContent=reg?"Buat akun baru":"Masuk ke dunia game";
+  $("authBtn").textContent=reg?"Daftar":"Login";
+  $("switchBtn").textContent=reg?"Sudah punya akun":"Buat akun baru";
+  $("characterName").classList.toggle("hidden",!reg);
+  authMsg("");
+};
+$("logout").onclick=async()=>{await api("/api/logout",{method:"POST"});location.reload()};
+
+(async()=>{try{const d=await api("/api/me");if(d.authenticated)showGame(d.user)}catch{}})();
+</script>
+</body>
+</html>
