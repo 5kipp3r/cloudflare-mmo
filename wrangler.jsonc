@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-02",
   "assets": {"directory":"./public","binding":"ASSETS","not_found_handling":"single-page-application"},
-  "d1_databases": [{"binding":"DB","database_name":"cloudflare-mmo-db","database_id":"REPLACE_WITH_YOUR_D1_DATABASE_ID"}],
+  "d1_databases": [{"binding":"DB","database_name":"cloudflare-mmo-db","database_id":"f901a3c9-b310-4fc7-abe4-19508be85c4c"}],
   "durable_objects": {"bindings":[{"name":"GAME_ROOM","class_name":"GameRoom"}]},
   "migrations": [{"tag":"v1","new_sqlite_classes":["GameRoom"]}]
 }
