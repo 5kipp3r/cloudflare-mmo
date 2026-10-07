@@ -4,298 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b1220">
-<title>Cloudflare MMO</title>
+<title>Cloudflare MMO — Sekolah</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1220;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
-button,input{font:inherit}
-.hidden{display:none!important}
-#auth{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:#0b1220;z-index:50;overflow:auto}
-.authCard{width:min(430px,100%);background:#1b2638;border:1px solid #34445d;border-radius:20px;padding:22px;box-shadow:0 16px 50px #0008}
-.authCard h1{margin:0 0 8px;font-size:28px}.authCard p{color:#b8c4d8}
-.authCard input,.authCard button{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid #465873}
-.authCard input{background:#0f1726;color:#fff;outline:none}
-.authCard button{border:0;background:#2864dc;color:#fff;font-weight:700}
-.authCard button.secondary{background:#334158}
-#game{position:fixed;inset:0;overflow:hidden;background:#6fa85f}
-#canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-#hud{position:fixed;left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));z-index:10;pointer-events:none}
-.hudBox{background:#0b1220d9;border:1px solid #ffffff22;border-radius:12px;padding:9px 12px;backdrop-filter:blur(8px);font-size:13px;line-height:1.45;box-shadow:0 8px 24px #0004}
-.hudName{font-weight:800;font-size:15px}.online{color:#70e08a}.offline{color:#ff8b8b}
-#logout{pointer-events:auto;margin-top:6px;padding:5px 9px;border:0;border-radius:8px;background:#334158;color:#fff;font-size:11px}
-#joystick{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));width:132px;height:132px;border-radius:50%;background:#0b122099;border:2px solid #ffffff30;z-index:20}
-#joyKnob{position:absolute;width:58px;height:58px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#ffffff30;border:2px solid #fff8;box-shadow:0 4px 16px #0005}
-#rightUI{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:min(310px,43vw);z-index:20;display:flex;flex-direction:column;gap:8px;align-items:stretch}
-#actions{display:flex;gap:6px;justify-content:flex-end}
-.actionBtn{border:1px solid #ffffff30;background:#0b1220dd;color:#fff;border-radius:10px;padding:10px 12px;font-weight:700;min-width:72px;box-shadow:0 6px 18px #0004}
-#chat{background:#0b1220c7;border:1px solid #ffffff25;border-radius:12px;backdrop-filter:blur(8px);overflow:hidden}
-#chatLog{height:125px;overflow:auto;padding:8px;font-size:12px;line-height:1.35}
-.chatLine{margin:3px 0;word-break:break-word}.chatLine b{color:#9dc1ff}
-#chatForm{display:flex;border-top:1px solid #ffffff20}
-#chatInput{min-width:0;flex:1;background:transparent;color:#fff;border:0;padding:10px;outline:none}
-#chatSend{width:58px;border:0;background:#2864dc;color:#fff;font-weight:700}
-#actionPanel{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:240px;width:min(290px,72vw);z-index:30;background:#111b2bfa;border:1px solid #ffffff25;border-radius:14px;padding:14px;box-shadow:0 15px 40px #0008}
-#actionPanel h3{margin:0 0 8px}.panelClose{float:right;border:0;background:#334158;color:#fff;border-radius:7px;padding:4px 8px}
-@media(max-width:600px){
- #rightUI{width:min(275px,58vw)}
- #chatLog{height:105px}
- #joystick{width:122px;height:122px}
- #joyKnob{width:54px;height:54px}
-}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1220;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}button,input{font:inherit}.hidden{display:none!important}
+#auth{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:#0b1220;z-index:50;overflow:auto}.authCard{width:min(430px,100%);background:#1b2638;border:1px solid #34445d;border-radius:20px;padding:22px;box-shadow:0 16px 50px #0008}.authCard h1{margin:0 0 8px;font-size:28px}.authCard p{color:#b8c4d8}.authCard input,.authCard button{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid #465873}.authCard input{background:#0f1726;color:#fff;outline:none}.authCard button{border:0;background:#2864dc;color:#fff;font-weight:700}.authCard button.secondary{background:#334158}
+#game{position:fixed;inset:0;overflow:hidden;background:#7db66a}#canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#hud{position:fixed;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));z-index:10;pointer-events:none}.hudBox{background:#0b1220e8;border:1px solid #ffffff25;border-radius:12px;padding:8px 11px;backdrop-filter:blur(8px);font-size:12px;line-height:1.45;box-shadow:0 8px 24px #0004}.hudName{font-weight:800;font-size:14px}.online{color:#70e08a}.offline{color:#ff8b8b}#logout{pointer-events:auto;margin-top:5px;padding:4px 8px;border:0;border-radius:7px;background:#334158;color:#fff;font-size:11px}
+#joystick{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));width:126px;height:126px;border-radius:50%;background:#0b12209c;border:2px solid #ffffff40;z-index:20;touch-action:none;box-shadow:0 5px 20px #0003}#joyKnob{position:absolute;width:54px;height:54px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#ffffff38;border:2px solid #fff9;box-shadow:0 4px 16px #0005;pointer-events:none}
+#rightUI{position:fixed;right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));width:min(310px,51vw);z-index:20;display:flex;flex-direction:column;gap:7px;align-items:stretch}#actions{display:flex;gap:5px;justify-content:flex-end}.actionBtn{border:1px solid #ffffff35;background:#101c24ed;color:#fff;border-radius:12px;padding:9px 10px;font-weight:800;min-width:0;flex:1;box-shadow:0 6px 18px #0004;font-size:clamp(12px,3.3vw,17px)}#chat{background:#101c24e8;border:1px solid #ffffff30;border-radius:13px;backdrop-filter:blur(8px);overflow:hidden}#chatLog{height:104px;overflow:auto;padding:7px;font-size:11px;line-height:1.35;overscroll-behavior:contain}.chatLine{margin:3px 0;word-break:break-word}.chatLine b{color:#9dc1ff}#chatForm{display:flex;border-top:1px solid #ffffff20}#chatInput{min-width:0;flex:1;width:10px;background:transparent;color:#fff;border:0;padding:10px 8px;outline:none;font-size:13px;touch-action:auto}#chatSend{border:0;background:#2864dc;color:#fff;font-weight:800;padding:0 12px;font-size:13px}
+#actionPanel{position:fixed;right:max(8px,env(safe-area-inset-right));bottom:220px;width:min(300px,75vw);z-index:30;background:#111b2bf5;border:1px solid #ffffff2a;border-radius:14px;padding:13px;box-shadow:0 15px 40px #0008;font-size:14px}.panelClose{float:right;border:0;background:#334158;color:#fff;border-radius:7px;padding:4px 8px}.panelTitle{margin:0 0 8px;font-size:17px}.hint{opacity:.78;font-size:11px;margin-top:5px}
+@media(max-width:600px){#rightUI{width:min(275px,56vw)}#chatLog{height:92px}#joystick{width:116px;height:116px}#joyKnob{width:50px;height:50px}.hudBox{font-size:11px}.hudName{font-size:13px}#actionPanel{bottom:205px}}
 </style>
-</head>
-<body>
-<section id="auth">
-  <div class="authCard">
-    <h1>Cloudflare MMO</h1>
-    <p id="authTitle">Masuk ke dunia game</p>
-    <input id="username" autocomplete="username" placeholder="Username">
-    <input id="password" type="password" autocomplete="current-password" placeholder="Password">
-    <input id="characterName" maxlength="8" placeholder="Nickname (3–8 karakter)" class="hidden">
-    <button id="authBtn">Login</button>
-    <button id="switchBtn" class="secondary">Buat akun baru</button>
-    <p id="authMsg"></p>
-  </div>
+</head><body>
+<section id="auth"><div class="authCard"><h1>Cloudflare MMO</h1><p id="authTitle">Masuk ke dunia sekolah</p><input id="username" autocomplete="username" placeholder="Username"><input id="password" type="password" autocomplete="current-password" placeholder="Password"><input id="characterName" maxlength="8" placeholder="Nickname (3–8 karakter)" class="hidden"><button id="authBtn">Login</button><button id="switchBtn" class="secondary">Buat akun baru</button><p id="authMsg"></p></div></section>
+<section id="game" class="hidden"><canvas id="canvas" aria-label="Kanvas dunia sekolah"></canvas>
+<div id="hud"><div class="hudBox"><div class="hudName" id="hudName">Player</div><div>Level <b id="hudLevel">1</b> · Gold <b id="hudGold">100</b></div><div id="hudStatus" class="offline">Menghubungkan...</div><button id="logout">Keluar</button></div></div>
+<div id="joystick" aria-label="Joystick"><div id="joyKnob"></div></div>
+<div id="rightUI"><div id="actions"><button class="actionBtn" id="actionBtn">Action</button><button class="actionBtn" id="questBtn">Quest</button><button class="actionBtn" id="bagBtn">Tas</button></div><div id="chat"><div id="chatLog"></div><form id="chatForm"><input id="chatInput" maxlength="120" autocomplete="off" placeholder="Tulis pesan..."><button id="chatSend">Kirim</button></form></div></div>
+<div id="actionPanel" class="hidden"><button class="panelClose" id="panelClose">Tutup</button><h3 class="panelTitle" id="panelTitle">Action</h3><div id="panelText"></div></div>
 </section>
-
-<section id="game" class="hidden">
-  <canvas id="canvas"></canvas>
-
-  <div id="hud">
-    <div class="hudBox">
-      <div class="hudName" id="hudName">Player</div>
-      <div>Level <b id="hudLevel">1</b> &nbsp; Gold <b id="hudGold">100</b></div>
-      <div id="hudStatus" class="offline">Menghubungkan...</div>
-      <button id="logout">Keluar</button>
-    </div>
-  </div>
-
-  <div id="joystick">
-    <div id="joyKnob"></div>
-  </div>
-
-  <div id="rightUI">
-    <div id="actions">
-      <button class="actionBtn" id="actionBtn">Action</button>
-      <button class="actionBtn" id="questBtn">Quest</button>
-      <button class="actionBtn" id="bagBtn">Tas</button>
-    </div>
-    <div id="chat">
-      <div id="chatLog"></div>
-      <form id="chatForm">
-        <input id="chatInput" maxlength="120" autocomplete="off" placeholder="Tulis pesan...">
-        <button id="chatSend">Kirim</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="actionPanel" class="hidden">
-    <button class="panelClose" id="panelClose">Tutup</button>
-    <h3 id="panelTitle">Action</h3>
-    <div id="panelText">Belum ada objek di dekat karakter.</div>
-  </div>
-</section>
-
 <script>
-let reg=false,ws=null,me=null;
-const players=new Map();
-const canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d");
-const WORLD_W=2000,WORLD_H=1200;
-const mePos={x:1000,y:600};
-const input={x:0,y:0};
-let camera={x:0,y:0,scale:1};
-let lastTime=performance.now(),lastSend=0;
-let joyActive=false,joyPointer=null;
-
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-const authMsg=t=>$("authMsg").textContent=t||"";
-
-async function api(p,o={}){
-  const r=await fetch(p,{credentials:"include",...o});
-  const d=await r.json().catch(()=>({}));
-  if(!r.ok)throw Error(d.error||"Request gagal");
-  return d;
+let reg=false,ws=null,me=null;const players=new Map();const canvas=$('canvas'),ctx=canvas.getContext('2d');
+const WORLD_W=2000,WORLD_H=1200,SPRITE_URL='/sprites/student.png';const mePos={x:1000,y:455};const input={x:0,y:0};let camera={x:0,y:0,scale:1},lastTime=performance.now(),lastSend=0,joyActive=false,joyPointer=null,facing='down',walkClock=0,animFrame=1;
+const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));const authMsg=t=>$('authMsg').textContent=t||'';
+async function api(p,o={}){const r=await fetch(p,{credentials:'include',...o});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Request gagal');return d}
+function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);ctx.setTransform(d,0,0,d,0,0)}addEventListener('resize',resize);resize();
+const sprite=new Image();sprite.src=SPRITE_URL;
+function showGame(u){me=u;$('auth').classList.add('hidden');$('game').classList.remove('hidden');$('hudName').textContent=(u.character.name||'Player').slice(0,8);$('hudLevel').textContent=u.character.level||1;$('hudGold').textContent=u.character.gold||0;connect();requestAnimationFrame(loop)}
+function addPlayer(p){if(p.id===me?.netId)return;players.set(p.id,{id:p.id,x:p.x,y:p.y,targetX:p.x,targetY:p.y,name:(p.name||'Player').slice(0,8),direction:p.direction||'down',frame:p.frame||1})}function removePlayer(id){players.delete(id)}
+function connect(){ws=new WebSocket((location.protocol==='https:'?'wss':'ws')+'://'+location.host+'/ws');ws.onopen=()=>{$('hudStatus').textContent='Online';$('hudStatus').className='online';sendPosition(true)};ws.onclose=()=>{$('hudStatus').textContent='Terputus';$('hudStatus').className='offline'};ws.onerror=()=>{$('hudStatus').textContent='Koneksi error';$('hudStatus').className='offline'};ws.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch{return}if(d.type==='welcome'){me.netId=d.playerId;mePos.x=d.self?.x??1000;mePos.y=d.self?.y??455;d.players.forEach(addPlayer)}else if(d.type==='join'){addPlayer(d)}else if(d.type==='move'){const p=players.get(d.id);if(p){p.targetX=d.x;p.targetY=d.y;p.name=(d.name||p.name||'Player').slice(0,8);p.direction=d.direction||p.direction;p.frame=d.frame||1}else if(d.id!==me?.netId)addPlayer({...d})}else if(d.type==='leave')removePlayer(d.id);else if(d.type==='chat')addChat(d.name,d.message)}}
+function sendPosition(force=false){const now=performance.now();if(!force&&now-lastSend<70)return;lastSend=now;if(ws?.readyState===1)ws.send(JSON.stringify({type:'move',x:mePos.x,y:mePos.y,direction:facing,frame:animFrame}))}
+function setInput(x,y){const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}input.x=x;input.y=y}
+const keys={};addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();keys[k]=true}});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+function keyboardInput(){let x=0,y=0;if(keys.a||keys.arrowleft)x--;if(keys.d||keys.arrowright)x++;if(keys.w||keys.arrowup)y--;if(keys.s||keys.arrowdown)y++;if(x||y)setInput(x,y);else if(!joyActive)setInput(0,0)}
+function joyMove(ev){const r=$('joystick').getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=ev.clientX-cx,dy=ev.clientY-cy;const max=r.width*.34,l=Math.hypot(dx,dy);if(l>max){dx=dx/l*max;dy=dy/l*max}$('joyKnob').style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;setInput(dx/max,dy/max)}
+$('joystick').addEventListener('pointerdown',e=>{joyActive=true;joyPointer=e.pointerId;$('joystick').setPointerCapture(e.pointerId);joyMove(e)});$('joystick').addEventListener('pointermove',e=>{if(joyActive&&e.pointerId===joyPointer)joyMove(e)});function resetJoy(){joyActive=false;joyPointer=null;$('joyKnob').style.transform='translate(-50%,-50%)';setInput(0,0)}$('joystick').addEventListener('pointerup',resetJoy);$('joystick').addEventListener('pointercancel',resetJoy);
+// Map data: collision rectangles, buildings and props share the same world coordinates.
+const buildings=[
+ {id:'clinic',x:260,y:160,w:240,h:170,label:'UKS',emoji:'🏥',wall:'#e8d7ad',roof:'#bd6155'},
+ {id:'school',x:650,y:115,w:680,h:245,label:'SEKOLAH',emoji:'🏫',wall:'#f0d7a0',roof:'#b84b42'},
+ {id:'library',x:1450,y:165,w:300,h:210,label:'PERPUSTAKAAN',emoji:'📚',wall:'#e8d4ad',roof:'#547b9e'},
+ {id:'canteen',x:1460,y:495,w:300,h:180,label:'KANTIN',emoji:'🍜',wall:'#f1dba7',roof:'#ca8547'},
+ {id:'workshop',x:300,y:440,w:300,h:180,label:'BENGKEL',emoji:'🔧',wall:'#d7d5c7',roof:'#697d8b'}
+];
+const obstacles=buildings.map(b=>({x:b.x-5,y:b.y-5,w:b.w+10,h:b.h+10}));
+const trees=[{x:150,y:190},{x:180,y:400},{x:130,y:690},{x:780,y:600},{x:890,y:610},{x:1200,y:620},{x:1370,y:800},{x:1780,y:780},{x:1830,y:350},{x:600,y:900},{x:850,y:1020},{x:1150,y:1000},{x:380,y:1020},{x:1740,y:1040},{x:530,y:370},{x:1360,y:380}];
+for(const t of trees)obstacles.push({x:t.x-17,y:t.y-13,w:34,h:30});
+const points=[
+ {id:'board',x:990,y:390,emoji:'📋',label:'Papan Informasi',kind:'info',text:'Selamat datang di sekolah! Jelajahi halaman, perpustakaan, kantin, UKS, dan bengkel.'},
+ {id:'teacher',x:1035,y:425,emoji:'🧑‍🏫',label:'Bu Guru',kind:'npc',text:'Halo! Selamat datang. Nanti kamu bisa mengambil quest dan menjawab kuis di sini.'},
+ {id:'librarysign',x:1400,y:270,emoji:'📖',label:'Rak Buku',kind:'info',text:'Perpustakaan adalah tempat membaca dan meminjam buku.'},
+ {id:'canteenfood',x:1410,y:585,emoji:'🥪',label:'Menu Kantin',kind:'info',text:'Kantin menyediakan makanan dan minuman untuk siswa.'},
+ {id:'garden',x:1540,y:850,emoji:'🌼',label:'Taman Belajar',kind:'quest',text:'Quest taman akan tersedia setelah sistem quest diaktifkan.'},
+ {id:'quiz',x:820,y:800,emoji:'❓',label:'Pojok Kuis',kind:'quiz',text:'Pojok kuis edukasi akan segera dibuka.'}
+];
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}function rectHit(x,y,r){return x+r>0&&y+r>0&&x-r<WORLD_W&&y-r<WORLD_H}
+function circleRect(cx,cy,r,o){const nx=clamp(cx,o.x,o.x+o.w),ny=clamp(cy,o.y,o.y+o.h);return (cx-nx)**2+(cy-ny)**2<r*r}
+function blocked(x,y){if(!rectHit(x,y,12))return true;return obstacles.some(o=>circleRect(x,y,12,o))}
+function tryMove(dx,dy){let nx=mePos.x+dx,ny=mePos.y+dy;if(!blocked(nx,mePos.y))mePos.x=nx;if(!blocked(mePos.x,ny))mePos.y=ny}
+function loop(now){const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;keyboardInput();const moving=Math.hypot(input.x,input.y)>.08;if(moving){facing=Math.abs(input.x)>Math.abs(input.y)?(input.x<0?'left':'right'):(input.y<0?'up':'down');walkClock+=dt*10;animFrame=1+Math.floor(walkClock)%3;tryMove(input.x*190*dt,input.y*190*dt);sendPosition()}else animFrame=1;
+ const vw=innerWidth,vh=innerHeight;camera.scale=Math.max(vw/WORLD_W,vh/WORLD_H);const ww=vw/camera.scale,wh=vh/camera.scale;camera.x=clamp(mePos.x-ww/2,0,WORLD_W-ww);camera.y=clamp(mePos.y-wh/2,0,WORLD_H-wh);draw();requestAnimationFrame(loop)}
+function sx(x){return (x-camera.x)*camera.scale}function sy(y){return (y-camera.y)*camera.scale}
+function rounded(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
+function worldLine(points,width,color){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(sx(p[0]),sy(p[1])):ctx.moveTo(sx(p[0]),sy(p[1])));ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=width*camera.scale;ctx.strokeStyle=color;ctx.stroke()}
+function label(text,x,y){const X=sx(x),Y=sy(y),s=camera.scale;ctx.font=`800 ${Math.max(10,13*s)}px system-ui`;const w=ctx.measureText(text).width+18;rounded(X-w/2,Y-11*s,w,23*s,7,'#24352ee8','#ffffff30');ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,X,Y)}
+function drawGround(){ctx.fillStyle='#80b96c';ctx.fillRect(0,0,innerWidth,innerHeight);const s=64*camera.scale;ctx.strokeStyle='#ffffff0c';ctx.lineWidth=1;for(let x=(-camera.x*camera.scale)%s;x<innerWidth;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,innerHeight);ctx.stroke()}for(let y=(-camera.y*camera.scale)%s;y<innerHeight;y+=s){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(innerWidth,y);ctx.stroke()}
+ // Campus roads / sidewalks
+ worldLine([[-30,440],[625,440],[625,400],[990,400],[990,520],[1390,520],[1390,850],[1800,850]],116,'#b8b7a1');worldLine([[-30,440],[625,440],[625,400],[990,400],[990,520],[1390,520],[1390,850],[1800,850]],88,'#d7d1b7');worldLine([[1000,520],[1000,1110]],100,'#d7d1b7');worldLine([[730,700],[1260,700]],72,'#d7d1b7');worldLine([[480,740],[480,920]],76,'#d7d1b7');
+ // school field with track
+ const fx=sx(210),fy=sy(675),fw=500*camera.scale,fh=310*camera.scale;rounded(fx,fy,fw,fh,22,'#4e9b55','#d6d6b8');rounded(fx+15*camera.scale,fy+15*camera.scale,fw-30*camera.scale,fh-30*camera.scale,20,'#6fbf64','#ffffff75');ctx.strokeStyle='#ffffffb0';ctx.lineWidth=2;ctx.strokeRect(fx+50*camera.scale,fy+48*camera.scale,fw-100*camera.scale,fh-96*camera.scale);ctx.beginPath();ctx.moveTo(fx+fw/2,fy+48*camera.scale);ctx.lineTo(fx+fw/2,fy+fh-48*camera.scale);ctx.stroke();ctx.beginPath();ctx.arc(fx+fw/2,fy+fh/2,34*camera.scale,0,Math.PI*2);ctx.stroke();label('LAPANGAN',460,650);
+ // basketball / activity court
+ rounded(sx(820),sy(850),340*camera.scale,190*camera.scale,12,'#d78d61','#f4dfbc');ctx.strokeStyle='#fff4d8';ctx.lineWidth=2;ctx.strokeRect(sx(835),sy(865),310*camera.scale,160*camera.scale);ctx.beginPath();ctx.moveTo(sx(990),sy(865));ctx.lineTo(sx(990),sy(1025));ctx.stroke();ctx.beginPath();ctx.arc(sx(990),sy(945),25*camera.scale,0,Math.PI*2);ctx.stroke();label('LAPANGAN AKTIVITAS',990,835);
 }
-function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);ctx.setTransform(d,0,0,d,0,0)}
-addEventListener("resize",resize);resize();
-
-function showGame(u){
-  me=u;
-  $("auth").classList.add("hidden");
-  $("game").classList.remove("hidden");
-  $("hudName").textContent=(u.character.name||"Player").slice(0,8);
-  $("hudLevel").textContent=u.character.level||1;
-  $("hudGold").textContent=u.character.gold||0;
-  connect();
-  requestAnimationFrame(loop);
-}
-
-function addPlayer(p){
-  if(p.id===me?.netId)return;
-  players.set(p.id,{id:p.id,x:p.x,y:p.y,targetX:p.x,targetY:p.y,name:(p.name||"Player").slice(0,8)});
-}
-function removePlayer(id){players.delete(id)}
-
-function connect(){
-  ws=new WebSocket((location.protocol==="https:"?"wss":"ws")+"://"+location.host+"/ws");
-  ws.onopen=()=>{$("hudStatus").textContent="Online";$("hudStatus").className="online";sendPosition(true)};
-  ws.onclose=()=>{$("hudStatus").textContent="Terputus";$("hudStatus").className="offline"};
-  ws.onerror=()=>{$("hudStatus").textContent="Koneksi error";$("hudStatus").className="offline"};
-  ws.onmessage=e=>{
-    let d;try{d=JSON.parse(e.data)}catch{return}
-    if(d.type==="welcome"){
-      me.netId=d.playerId;
-      mePos.x=d.self?.x??d.players.find(p=>p.id===d.playerId)?.x??1000;
-      mePos.y=d.self?.y??d.players.find(p=>p.id===d.playerId)?.y??600;
-      d.players.forEach(addPlayer);
-    }else if(d.type==="join"){addPlayer(d)}
-    else if(d.type==="move"){
-      const p=players.get(d.id);
-      if(p){p.targetX=d.x;p.targetY=d.y;p.name=(d.name||p.name||"Player").slice(0,8)}
-      else if(d.id!==me?.netId)addPlayer({...d});
-    }else if(d.type==="leave"){removePlayer(d.id)}
-    else if(d.type==="chat"){addChat(d.name,d.message)}
-  };
-}
-function sendPosition(force=false){
-  const now=performance.now();
-  if(!force&&now-lastSend<80)return;
-  lastSend=now;
-  if(ws?.readyState===1)ws.send(JSON.stringify({type:"move",x:mePos.x,y:mePos.y}));
-}
-
-function setInput(x,y){
-  const l=Math.hypot(x,y);
-  if(l>1){x/=l;y/=l}
-  input.x=x;input.y=y;
-}
-const keys={};
-addEventListener("keydown",e=>{
-  const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(k)){e.preventDefault();keys[k]=true}
-});
-addEventListener("keyup",e=>{keys[e.key.toLowerCase()]=false});
-function keyboardInput(){
-  let x=0,y=0;
-  if(keys.a||keys.arrowleft)x--;
-  if(keys.d||keys.arrowright)x++;
-  if(keys.w||keys.arrowup)y--;
-  if(keys.s||keys.arrowdown)y++;
-  if(x||y)setInput(x,y);
-  else if(!joyActive)setInput(0,0);
-}
-
-function joyMove(ev){
-  const r=$("joystick").getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-  let dx=ev.clientX-cx,dy=ev.clientY-cy;
-  const max=r.width*.34,l=Math.hypot(dx,dy);
-  if(l>max){dx=dx/l*max;dy=dy/l*max}
-  $("joyKnob").style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
-  setInput(dx/max,dy/max);
-}
-$("joystick").addEventListener("pointerdown",e=>{joyActive=true;joyPointer=e.pointerId;$("joystick").setPointerCapture(e.pointerId);joyMove(e)});
-$("joystick").addEventListener("pointermove",e=>{if(joyActive&&e.pointerId===joyPointer)joyMove(e)});
-$("joystick").addEventListener("pointerup",e=>{if(e.pointerId===joyPointer){joyActive=false;joyPointer=null;$("joyKnob").style.transform="translate(-50%,-50%)";setInput(0,0)}});
-$("joystick").addEventListener("pointercancel",()=>{joyActive=false;joyPointer=null;$("joyKnob").style.transform="translate(-50%,-50%)";setInput(0,0)});
-
-function loop(now){
-  const dt=Math.min(.05,(now-lastTime)/1000);lastTime=now;
-  keyboardInput();
-  if(input.x||input.y){
-    const speed=190;
-    mePos.x=Math.max(35,Math.min(WORLD_W-35,mePos.x+input.x*speed*dt));
-    mePos.y=Math.max(45,Math.min(WORLD_H-35,mePos.y+input.y*speed*dt));
-    sendPosition();
-  }
-  const viewW=innerWidth,viewH=innerHeight;
-  camera.scale=Math.max(viewW/WORLD_W,viewH/WORLD_H);
-  const worldViewW=viewW/camera.scale,worldViewH=viewH/camera.scale;
-  camera.x=Math.max(0,Math.min(WORLD_W-worldViewW,mePos.x-worldViewW/2));
-  camera.y=Math.max(0,Math.min(WORLD_H-worldViewH,mePos.y-worldViewH/2));
-  draw();
-  requestAnimationFrame(loop);
-}
-function sx(x){return (x-camera.x)*camera.scale}
-function sy(y){return (y-camera.y)*camera.scale}
-
-function drawWorld(){
-  ctx.fillStyle="#6fa85f";ctx.fillRect(0,0,innerWidth,innerHeight);
-  const step=64*camera.scale;
-  ctx.strokeStyle="#ffffff12";ctx.lineWidth=1;
-  const ox=(-camera.x*camera.scale)%step,oy=(-camera.y*camera.scale)%step;
-  for(let x=ox;x<innerWidth;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,innerHeight);ctx.stroke()}
-  for(let y=oy;y<innerHeight;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(innerWidth,y);ctx.stroke()}
-  // Simple landmarks so the canvas feels like a map.
-  const landmarks=[["Sekolah",1000,240],["Taman",350,800],["Lapangan",1600,850]];
-  ctx.textAlign="center";ctx.font=`700 ${Math.max(12,18*camera.scale)}px system-ui`;
-  for(const [name,x,y] of landmarks){
-    ctx.fillStyle="#254b2a88";ctx.fillRect(sx(x)-90*camera.scale,sy(y)-45*camera.scale,180*camera.scale,90*camera.scale);
-    ctx.fillStyle="#fff";ctx.fillText(name,sx(x),sy(y)+6*camera.scale);
-  }
-}
-function drawCharacter(x,y,name,isMe){
-  const X=sx(x),Y=sy(y),s=Math.max(.7,camera.scale);
-  // shadow
-  ctx.fillStyle="#0005";ctx.beginPath();ctx.ellipse(X,Y+7*s,18*s,7*s,0,0,Math.PI*2);ctx.fill();
-  // body/head
-  ctx.fillStyle=isMe?"#e34a4a":"#3b82f6";ctx.beginPath();ctx.roundRect(X-12*s,Y-28*s,24*s,28*s,7*s);ctx.fill();
-  ctx.fillStyle="#f3c7a5";ctx.beginPath();ctx.arc(X,Y-34*s,10*s,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#1f2937";ctx.beginPath();ctx.arc(X,Y-38*s,10*s,Math.PI,Math.PI*2);ctx.fill();
-  ctx.textAlign="center";ctx.font=`700 ${Math.max(10,12*s)}px system-ui`;
-  const n=name.slice(0,8);
-  const w=ctx.measureText(n).width+12;
-  ctx.fillStyle="#07101ddd";ctx.fillRect(X-w/2,Y-58*s,w,17*s);
-  ctx.fillStyle="#fff";ctx.fillText(n,X,Y-46*s);
-}
-function draw(){
-  drawWorld();
-  for(const p of players.values()){
-    p.x+=(p.targetX-p.x)*.22;p.y+=(p.targetY-p.y)*.22;
-    drawCharacter(p.x,p.y,p.name,false);
-  }
-  drawCharacter(mePos.x,mePos.y,(me?.character?.name||"Player").slice(0,8),true);
-}
-
-function addChat(name,text){
-  const d=document.createElement("div");d.className="chatLine";
-  d.innerHTML=`<b>${esc(String(name||"Player").slice(0,8))}</b>: ${esc(text)}`;
-  $("chatLog").appendChild(d);
-  $("chatLog").scrollTop=$("chatLog").scrollHeight;
-}
-$("chatForm").onsubmit=e=>{
-  e.preventDefault();
-  const text=$("chatInput").value.trim();
-  if(!text||ws?.readyState!==1)return;
-  ws.send(JSON.stringify({type:"chat",message:text}));
-  $("chatInput").value="";
-};
-
-function panel(title,text){$("panelTitle").textContent=title;$("panelText").textContent=text;$("actionPanel").classList.remove("hidden")}
-$("panelClose").onclick=()=>$("actionPanel").classList.add("hidden");
-$("actionBtn").onclick=()=>panel("Action","Belum ada objek interaktif di dekat karakter.");
-$("questBtn").onclick=()=>panel("Quest","Sistem quest siap ditambahkan ke map. Tombol ini sudah disiapkan untuk interaksi berikutnya.");
-$("bagBtn").onclick=()=>panel("Tas","Inventory karakter akan tampil di sini.");
-
-$("authBtn").onclick=async()=>{
-  try{
-    const body={username:$("username").value,password:$("password").value};
-    if(reg)body.characterName=$("characterName").value;
-    const d=await api(reg?"/api/register":"/api/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
-    showGame(d.user);
-  }catch(e){authMsg(e.message)}
-};
-$("switchBtn").onclick=()=>{
-  reg=!reg;
-  $("authTitle").textContent=reg?"Buat akun baru":"Masuk ke dunia game";
-  $("authBtn").textContent=reg?"Daftar":"Login";
-  $("switchBtn").textContent=reg?"Sudah punya akun":"Buat akun baru";
-  $("characterName").classList.toggle("hidden",!reg);
-  authMsg("");
-};
-$("logout").onclick=async()=>{await api("/api/logout",{method:"POST"});location.reload()};
-
-(async()=>{try{const d=await api("/api/me");if(d.authenticated)showGame(d.user)}catch{}})();
-</script>
-</body>
-</html>
+function drawBuilding(b){const x=sx(b.x),y=sy(b.y),w=b.w*camera.scale,h=b.h*camera.scale,s=camera.scale;ctx.fillStyle='#0003';ctx.fillRect(x+7*s,y+9*s,w,h);rounded(x,y,w,h,5*s,b.wall,'#8e795c');ctx.fillStyle=b.roof;ctx.beginPath();ctx.moveTo(x-8*s,y+8*s);ctx.lineTo(x+w/2,y-30*s);ctx.lineTo(x+w+8*s,y+8*s);ctx.closePath();ctx.fill();ctx.strokeStyle='#ffffff55';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#9cc8dc';for(let wx=x+18*s;wx<x+w-12*s;wx+=48*s){ctx.fillRect(wx,y+45*s,23*s,28*s);ctx.strokeStyle='#fff9';ctx.strokeRect(wx,y+45*s,23*s,28*s);ctx.beginPath();ctx.moveTo(wx+11*s,y+45*s);ctx.lineTo(wx+11*s,y+73*s);ctx.stroke()}ctx.fillStyle='#76563d';ctx.fillRect(x+w/2-18*s,y+h-47*s,36*s,47*s);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font=`800 ${Math.max(12,16*s)}px system-ui`;ctx.fillText(b.emoji,x+w/2,y+25*s);ctx.font=`800 ${Math.max(10,12*s)}px system-ui`;ctx.fillStyle='#273b36';ctx.fillText(b.label,x+w/2,y+h+17*s)}
+function drawTree(t){const x=sx(t.x),y=sy(t.y),s=camera.scale;ctx.fillStyle='#0003';ctx.beginPath();ctx.ellipse(x,y+8*s,22*s,8*s,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#795438';ctx.fillRect(x-5*s,y-7*s,10*s,25*s);for(const [dx,dy,r,c] of [[0,-22,19,'#2e7942'],[-13,-13,13,'#39884a'],[13,-12,14,'#4b9a50'],[0,-35,12,'#55a456']]){ctx.beginPath();ctx.arc(x+dx*s,y+dy*s,r*s,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();ctx.strokeStyle='#ffffff20';ctx.lineWidth=1;ctx.stroke()}}
+function drawGarden(){rounded(sx(1300),sy(735),470*camera.scale,285*camera.scale,24,'#77a85d','#d8d0a0');for(const [x,y,e] of [[1360,790,'🌷'],[1450,760,'🌼'],[1570,800,'🌻'],[1660,760,'🌷'],[1400,930,'🌼'],[1590,950,'🌷'],[1700,920,'🌼']])drawEmoji(e,x,y,1.1);label('TAMAN BELAJAR',1535,730)}
+function drawEmoji(e,x,y,size=1){ctx.font=`${Math.max(17,25*camera.scale*size)}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e,sx(x),sy(y))}
+function drawProps(){drawGarden();for(const t of trees)drawTree(t);for(const b of buildings)drawBuilding(b);for(const p of points){drawEmoji(p.emoji,p.x,p.y,1);ctx.font=`700 ${Math.max(9,11*camera.scale)}px system-ui`;ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(p.label,sx(p.x),sy(p.y+25))}drawEmoji('⛲',1210,790,1.3);drawEmoji('🪑',1120,570,1);drawEmoji('🪑',1160,570,1);drawEmoji('🗑️',600,510,.9);drawEmoji('🚲',610,400,.9)}
+function drawSpriteCharacter(x,y,name,direction,frame,isMe){const X=sx(x),Y=sy(y),s=camera.scale;ctx.fillStyle='#0004';ctx.beginPath();ctx.ellipse(X,Y+3*s,15*s,6*s,0,0,Math.PI*2);ctx.fill();if(sprite.complete&&sprite.naturalWidth){const rows={down:0,left:1,right:2,up:3},row=rows[direction]??0,col=(frame||1)-1;ctx.imageSmoothingEnabled=false;ctx.drawImage(sprite,col*32,row*32,32,32,X-20*s,Y-36*s,40*s,40*s);ctx.imageSmoothingEnabled=true}else{ctx.fillStyle=isMe?'#e34a4a':'#3478d4';rounded(X-10*s,Y-25*s,20*s,25*s,5*s,'#e34a4a');ctx.fillStyle='#f0bd97';ctx.beginPath();ctx.arc(X,Y-30*s,8*s,0,Math.PI*2);ctx.fill()}
+ const n=String(name||'Player').slice(0,8);ctx.font=`800 ${Math.max(10,12*s)}px system-ui`;const w=ctx.measureText(n).width+12*s;rounded(X-w/2,Y-54*s,w,17*s,4*s,isMe?'#172b20ee':'#10233cee','#ffffff40');ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n,X,Y-45*s)}
+function draw(){drawGround();drawProps();for(const p of players.values()){p.x+=(p.targetX-p.x)*Math.min(1,.18);p.y+=(p.targetY-p.y)*Math.min(1,.18);drawSpriteCharacter(p.x,p.y,p.name,p.direction,p.frame,false)}drawSpriteCharacter(mePos.x,mePos.y,(me?.character?.name||'Player').slice(0,8),facing,animFrame,true)}
+function nearestPoint(){let best=null,bd=100;for(const p of points){const d=Math.hypot(p.x-mePos.x,p.y-mePos.y);if(d<bd){best=p;bd=d}}return best}
+function panel(title,text){$('panelTitle').textContent=title;$('panelText').textContent=text;$('actionPanel').classList.remove('hidden')}$('panelClose').onclick=()=>$('actionPanel').classList.add('hidden');$('actionBtn').onclick=()=>{const p=nearestPoint();if(!p){panel('Action','Tidak ada NPC atau objek interaktif di dekatmu. Dekati tanda atau karakter bertanda di peta.');return}panel(p.emoji+' '+p.label,p.text)};$('questBtn').onclick=()=>{const p=points.find(p=>p.kind==='quest'&&Math.hypot(p.x-mePos.x,p.y-mePos.y)<130);panel('Quest',p?p.text:'Dekati 🌼 Taman Belajar untuk melihat titik quest. Sistem quest tersimpan akan ditambahkan setelah map stabil.')};$('bagBtn').onclick=()=>panel('Tas','Tas belum memiliki item. Sistem inventori dan pengambilan item akan dihubungkan ke database pada tahap berikutnya.');
+function addChat(name,text){const d=document.createElement('div');d.className='chatLine';d.innerHTML=`<b>${esc(String(name||'Player').slice(0,8))}</b>: ${esc(text)}`;$('chatLog').appendChild(d);while($('chatLog').children.length>35)$('chatLog').firstChild.remove();$('chatLog').scrollTop=$('chatLog').scrollHeight}
+$('chatForm').onsubmit=e=>{e.preventDefault();const text=$('chatInput').value.trim();if(!text||ws?.readyState!==1)return;ws.send(JSON.stringify({type:'chat',message:text}));$('chatInput').value=''};
+$('authBtn').onclick=async()=>{try{const body={username:$('username').value,password:$('password').value};if(reg)body.characterName=$('characterName').value;const d=await api(reg?'/api/register':'/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});showGame(d.user)}catch(e){authMsg(e.message)}};$('switchBtn').onclick=()=>{reg=!reg;$('authTitle').textContent=reg?'Buat akun baru':'Masuk ke dunia sekolah';$('authBtn').textContent=reg?'Daftar':'Login';$('switchBtn').textContent=reg?'Sudah punya akun':'Buat akun baru';$('characterName').classList.toggle('hidden',!reg);authMsg('')};$('logout').onclick=async()=>{await api('/api/logout',{method:'POST'});location.reload()};(async()=>{try{const d=await api('/api/me');if(d.authenticated)showGame(d.user)}catch{}})();
+</script></body></html>
