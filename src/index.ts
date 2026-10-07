@@ -117,8 +117,35 @@ async function login(r:Request,e:Env){
   return session(e,a.id,a.username,c);
 }
 
+const MAP_BUILDINGS = [
+  {x:255,y:155,w:250,h:180},
+  {x:645,y:110,w:690,h:255},
+  {x:1445,y:160,w:310,h:220},
+  {x:1455,y:490,w:310,h:190},
+  {x:295,y:435,w:310,h:190}
+];
+const MAP_TREES = [
+  [150,190],[180,400],[130,690],[780,600],[890,610],[1200,620],[1370,800],
+  [1780,780],[1830,350],[600,900],[850,1020],[1150,1000],[380,1020],[1740,1040],[530,370],[1360,380]
+];
+function blockedOnServer(x:number,y:number){
+  if(x<12||y<12||x>1988||y>1188)return true;
+  for(const o of MAP_BUILDINGS){
+    const nx=Math.max(o.x-5,Math.min(x,o.x+o.w+5));
+    const ny=Math.max(o.y-5,Math.min(y,o.y+o.h+5));
+    if((x-nx)**2+(y-ny)**2<12**2)return true;
+  }
+  for(const [tx,ty] of MAP_TREES){
+    const nx=Math.max(tx-17,Math.min(x,tx+17));
+    const ny=Math.max(ty-13,Math.min(y,ty+17));
+    if((x-nx)**2+(y-ny)**2<12**2)return true;
+  }
+  return false;
+}
+
 export class GameRoom extends DurableObject<Env>{
-  positions=new Map<string,{x:number,y:number,name:string}>();
+  positions=new Map<string,{x:number,y:number,name:string,direction:string,frame:number}>();
+  lastMove=new Map<string,number>();
 
   constructor(ctx:DurableObjectState,env:Env){
     super(ctx,env);
@@ -137,12 +164,11 @@ export class GameRoom extends DurableObject<Env>{
     this.ctx.acceptWebSocket(server);
     server.serializeAttachment({id,name});
 
-    const p={
-      x:400+Math.floor(Math.random()*1600),
-      y:300+Math.floor(Math.random()*700),
-      name
-    };
+    let spawnX=940+Math.floor(Math.random()*120),spawnY=430+Math.floor(Math.random()*55);
+    if(blockedOnServer(spawnX,spawnY)){spawnX=1000;spawnY=455;}
+    const p={x:spawnX,y:spawnY,name,direction:"down",frame:1};
     this.positions.set(id,p);
+    this.lastMove.set(id,Date.now());
 
     server.send(JSON.stringify({
       type:"welcome",
@@ -163,14 +189,19 @@ export class GameRoom extends DurableObject<Env>{
     if(d?.type==="move"){
       const x=Number(d.x),y=Number(d.y),old=this.positions.get(a.id);
       if(!old||!Number.isFinite(x)||!Number.isFinite(y))return;
-
-      const p={
-        x:Math.max(0,Math.min(2000,Math.round(x))),
-        y:Math.max(0,Math.min(1200,Math.round(y))),
-        name:old.name
-      };
-      this.positions.set(a.id,p);
-      this.broadcast(JSON.stringify({type:"move",id:a.id,x:p.x,y:p.y,name:p.name}),[ws]);
+      const now=Date.now(),last=this.lastMove.get(a.id)||now;
+      // Allow normal joystick movement with a little packet jitter tolerance, but reject teleporting.
+      const maxDistance=Math.max(38,Math.min(420,(now-last)*0.36+18));
+      const dx=x-old.x,dy=y-old.y,dist=Math.hypot(dx,dy);
+      if(dist>maxDistance)return;
+      let nx=Math.max(12,Math.min(1988,Math.round(x)));
+      let ny=Math.max(12,Math.min(1188,Math.round(y)));
+      if(blockedOnServer(nx,ny)){nx=old.x;ny=old.y;}
+      const direction=["down","left","right","up"].includes(String(d.direction))?String(d.direction):old.direction;
+      const frame=[1,2,3].includes(Number(d.frame))?Number(d.frame):1;
+      const p={x:nx,y:ny,name:old.name,direction,frame};
+      this.positions.set(a.id,p);this.lastMove.set(a.id,now);
+      this.broadcast(JSON.stringify({type:"move",id:a.id,x:p.x,y:p.y,name:p.name,direction:p.direction,frame:p.frame}),[ws]);
       return;
     }
 
@@ -189,7 +220,7 @@ export class GameRoom extends DurableObject<Env>{
   leave(ws:WebSocket){
     const a=ws.deserializeAttachment() as {id:string}|null;
     if(!a)return;
-    this.positions.delete(a.id);
+    this.positions.delete(a.id);this.lastMove.delete(a.id);
     this.broadcast(JSON.stringify({type:"leave",id:a.id}),[ws]);
   }
 
