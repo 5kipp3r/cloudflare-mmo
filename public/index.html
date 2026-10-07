@@ -24,9 +24,9 @@
 <div id="actionPanel" class="hidden"><button class="panelClose" id="panelClose">Tutup</button><h3 class="panelTitle" id="panelTitle">Action</h3><div id="panelText"></div></div>
 </section>
 <script>
+const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));const authMsg=t=>$('authMsg').textContent=t||'';
 let reg=false,ws=null,me=null;const players=new Map();const canvas=$('canvas'),ctx=canvas.getContext('2d');
 const WORLD_W=2000,WORLD_H=1200,SPRITE_URL='/sprites/student.png';const mePos={x:1000,y:455};const input={x:0,y:0};let camera={x:0,y:0,scale:1},lastTime=performance.now(),lastSend=0,joyActive=false,joyPointer=null,facing='down',walkClock=0,animFrame=1;
-const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));const authMsg=t=>$('authMsg').textContent=t||'';
 async function api(p,o={}){const r=await fetch(p,{credentials:'include',...o});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Request gagal');return d}
 function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);ctx.setTransform(d,0,0,d,0,0)}addEventListener('resize',resize);resize();
 const sprite=new Image();sprite.src=SPRITE_URL;
