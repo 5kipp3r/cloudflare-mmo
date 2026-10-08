@@ -1,0 +1,1 @@
+-- No new DB tables required for V1. Room data is modular client-side blueprint.\n
